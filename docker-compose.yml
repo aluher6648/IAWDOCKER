@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+
+  mariadb:
+    image: mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DBNAME=${MYSQL_DBNAME}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASS=${MYSQL_PASS}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    restart: unless-stopped
+    networks:
+      - red1
+
+  bookmedik:
+    image: pabloherrerabordoy/bookmedikpablo
+    ports:
+      - "8085:80"
+    depends_on:
+      - mariadb
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_DBNAME=${DB_DBNAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+    networks:
+      - red1
+
+volumes:
+  mariadb_data: {}
+networks:
+  red1: {}
